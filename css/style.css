@@ -576,26 +576,3 @@ form.login-form input[type = "submit"],form.sign-up-form input[type = "submit"]{
   }
   .logo{font-size:1.4rem;}
 }
-
-/* Post-login polish pass */
-.content-section{padding: 1rem 0 2rem;}
-#inbox .container, #leaderboard .container, #store.container{background:#f8fffd;border-radius:14px;padding:1.2rem 1rem;}
-#getallproj .accordion-item, #getalltasks .accordion-item{border:1px solid #dbeeed;border-radius:10px;margin-bottom:.6rem;overflow:hidden;}
-#getallproj .accordion-button, #getalltasks .accordion-button{font-weight:600;background:#fff;}
-.store-note{margin:.5rem 0 1rem;color:#35545c;font-size:.95rem;}
-.reward-card{padding:1rem 1rem 1.25rem;min-height:360px;display:flex;flex-direction:column;justify-content:flex-start;gap:.35rem;box-shadow:0 8px 24px rgba(20,145,170,.08);border:1px solid #d7eeea;}
-.reward-card h5{margin:0;line-height:1.25;}
-.reward-card .reward-cost{color:#0C5DF4;font-weight:700;}
-.reward-card button{margin-top:auto;border-radius:10px;font-weight:600;}
-#store h4{color:#0b6070;font-weight:700;}
-#leaderboard table{background:#fff;border-radius:10px;overflow:hidden;}
-#leaderboard thead th{background:#1491AA;color:#fff;}
-#todoist-connect-card .alert{border-radius:12px;border:1px solid #bfe2ff;}
-.user-points{width:230px;padding:12px 10px;}
-
-@media (max-width: 576px){
-  #inbox .container, #leaderboard .container, #store.container{padding:.8rem .65rem;}
-  .reward-card{min-height:auto;margin-bottom:1rem;}
-  .user-points{width:70%;top:64px;}
-  .store-note{margin-top:3rem;}
-}

@@ -10,15 +10,11 @@ function normalizeTodoistListResponse(response){
     if(response && Array.isArray(response.results)) return response.results;
     return [];
 }
-function setSectionMessage(selector, message, type){
-    var css = type === "error" ? "alert-danger" : (type === "info" ? "alert-info" : "alert-success");
-    $(selector).html(`<div class="alert ${css}" role="alert">${message}</div>`);
-}
 
 function withTodoistAuth(settings){
     var token = getTodoistToken();
     if(!token){
-        showTodoistMessage("Connect Todoist to enable task/project sync.");
+        showTodoistMessage("Connect Todoist to enable task/project sync (optional).");
         return null;
     }
     settings.headers = settings.headers || {};
@@ -120,6 +116,11 @@ $(document).ready(function(){
         }, false);
     });
     var $editIcon = $('div.accordion-body button#update');
+    $editIcon.on("click",function(e){
+        e.preventDefault();
+        alert('sup')
+    });
+    var $editIcon = $('div.accordion-body button#update');
     $editIcon.on("click",function(e){ e.preventDefault(); });
     $('a:contains("View Comments")').on('click',function(){         //when user clicks on view comments
         var selectedTaskName = $('[aria-expanded=true]').text().trim()
@@ -166,7 +167,6 @@ function getAllProjects(colorArray){
         "headers":{"Content-Type":"application/json"}
     });
     if(!settings){ return; }
-    setSectionMessage("#getallproj", "Loading projects...", "info");
     $.ajax(settings).done(function(response){
         var projects = normalizeTodoistListResponse(response);
         pList = projects;
@@ -186,7 +186,7 @@ function getAllProjects(colorArray){
               </div>
             </div>`
         }
-        document.getElementById("getallproj").innerHTML = projects.length ? content : `<div class="alert alert-info">No projects found in Todoist.</div>`;
+        document.getElementById("getallproj").innerHTML = content;
     }).fail(handleTodoistError);
 };
 //Function for creating a project
@@ -196,11 +196,7 @@ $('button#addprojbtn').on("click",function(e){
     createNewProject(projectName, API_KEY);
 });
 function createNewProject(pName,API_KEY){ //POST method
-    if(!pName || !pName.trim()){
-        setSectionMessage("#getallproj", "Please enter a project name.", "error");
-        return;
-    }
-    var projectInfo = {"name":pName.trim()};
+    var projectInfo = {"name":pName};
     var settings = withTodoistAuth({
         "url":`${TODOIST_API_BASE}/projects`,
         "method":"POST",
@@ -239,9 +235,8 @@ $('input#task_datetime').on('blur',function(){
     dueDate = $('input#task_datetime').val()
         });
 function createNewTask(taskName,API_KEY, dueDate){
-    if(!taskName || !taskName.trim()){ setSectionMessage("#getalltasks","Please enter a task name.","error"); return; }
-    if(dueDate === '' || dueDate === undefined){ setSectionMessage("#getalltasks","Please select a due date.","error"); return; }
-    var taskInfo = {"content":taskName.trim(),"due_date": dueDate,"due_lang": "en","priority": 4};
+    if(dueDate === '' || dueDate === undefined){ alert("Please select a due date"); return; }
+    var taskInfo = {"content":taskName,"due_date": dueDate,"due_lang": "en","priority": 4};
     var settings = withTodoistAuth({
         "url":`${TODOIST_API_BASE}/tasks`,"method":"POST",
         "headers":{"Content-Type":"application/json"},"data":JSON.stringify(taskInfo)
@@ -254,17 +249,15 @@ function getActiveTasks(API_KEY){
     var tasks ='';
     var settings = withTodoistAuth({"url":`${TODOIST_API_BASE}/tasks`,"method":"GET","headers":{}});
     if(!settings){ return; }
-    setSectionMessage("#getalltasks", "Loading tasks...", "info");
     $.ajax(settings).done(function(response){
         var results = normalizeTodoistListResponse(response);
         taskList = results;
         for(let i =0;i<results.length;i++){
             var dueDateText = (results[i].due && results[i].due.date) ? new Date(results[i].due.date).toDateString() : 'No due date';
-            tasks+=`<div class="accordion-item"><h2 class="accordion-header" id="flush-heading${i+1}"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse${i+1}" aria-expanded="false" aria-controls="flush-collapse${i+1}">${results[i].content || "Untitled task"}</button></h2><div id="flush-collapse${i+1}" class="accordion-collapse collapse" aria-labelledby="flush-heading${i+1}" data-bs-parent="#accordionFlushExample"><div class="accordion-body"><span style="padding-right: 20px;"><a data-bs-toggle="modal" data-bs-target="#calendarModal"><ion-icon name="calendar-outline"></ion-icon>${dueDateText}</a></span><span style="padding-right: 20px;"><a data-bs-toggle="modal" data-bs-target="#commentmodal"><ion-icon name="chatbox-outline"></ion-icon>Add Comments</a></span></span><span><a data-bs-toggle="modal" data-bs-target="#viewcomments"><ion-icon name="eye-outline"></ion-icon>View Comments</a></span></span><span><div class="form-check"><br><input onclick="displayToast()" class="form-check-input" type="checkbox" value="" id="defaultCheck${i+1}"><label class="form-check-label" for="defaultCheck${i+1}">Complete Task</label></div></span></div></div></div>`;
+            tasks+=`<div class="accordion-item"><h2 class="accordion-header" id="flush-heading${i+1}"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse${i+1}" aria-expanded="false" aria-controls="flush-collapse${i+1}">${results[i].content}</button></h2><div id="flush-collapse${i+1}" class="accordion-collapse collapse" aria-labelledby="flush-heading${i+1}" data-bs-parent="#accordionFlushExample"><div class="accordion-body"><span style="padding-right: 20px;"><a data-bs-toggle="modal" data-bs-target="#calendarModal"><ion-icon name="calendar-outline"></ion-icon>${dueDateText}</a></span><span style="padding-right: 20px;"><a data-bs-toggle="modal" data-bs-target="#commentmodal"><ion-icon name="chatbox-outline"></ion-icon>Add Comments</a></span></span><span><a data-bs-toggle="modal" data-bs-target="#viewcomments"><ion-icon name="eye-outline"></ion-icon>View Comments</a></span></span><span><div class="form-check"><br><input onclick="displayToast()" class="form-check-input" type="checkbox" value="" id="defaultCheck1"><label class="form-check-label" for="defaultCheck1">Complete Task</label></div></span></div></div></div>`;
             tasks+='<span class = "three-dots"></span></div>';
             document.getElementById("getalltasks").innerHTML = tasks;
         }
-        if(!results.length){ setSectionMessage("#getalltasks", "No active tasks found.", "info"); }
     }).fail(handleTodoistError);
     var d = $("[aria-expanded=true]").parent().next().children().children().first().children().text();
     $('.accordion-body').children('span').first().on('focus',function(){});
@@ -600,7 +593,7 @@ function closeTask(closingTaskId){
     var settings = withTodoistAuth({
         "url": `${TODOIST_API_BASE}/tasks/${String(closingTaskId)}/close`,
         "method":"POST",
-        "statusCode":{204:function(){ setSectionMessage("#getalltasks","Task marked complete.","success"); }},
+        "statusCode":{204:function(){ alert(`Task Id :${closingTaskId} has been successfully closed!`);}},
         "headers":{}
     })
     if(!settings){ return; }
