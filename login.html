@@ -14,24 +14,25 @@
     <section class="container-fluid">
       <!-- login register wrapper partially copied from YouTube(cant rmb channel name,sry)-->
         <section class="row justify-content-center">
-          <section class="col-12 col-sm-6 col-md-3">
+          <section class="col-12 col-sm-10 col-md-7 col-lg-5">
             <div class="login-register-wrapper">
               <div class="logo">
                 <img src="assets/drawing.png" alt="logo" width="65" height="65">OrDino
-              </div>           
+              </div>
+              <p class="auth-subtitle">Organize tasks, build momentum, and stay consistent.</p>           
               <ul class="nav nav-tabs" id="myTab" role="tablist">
                   <li class="nav-item">
                     <a class="nav-link active" id="login-tab" data-bs-toggle="tab" href="#Login" aria-controls="Login" role="tab" aria-selected="true">Login</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" id="sign-up-tab" data-bs-toggle="tab" href="#Sign-up" aria-controls="Sign-up" role="tab" aria-selected="undefined">Sign Up</a>
+                    <a class="nav-link" id="sign-up-tab" data-bs-toggle="tab" href="#Sign-up" aria-controls="Sign-up" role="tab" aria-selected="false">Sign Up</a>
                   </li>
               </ul>
               <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" style="background-color: rgb(0, 255, 149);" id="Login" role="tabpanel" aria-labelledby="login-tab">
+                <div class="tab-pane fade show active" id="Login" role="tabpanel" aria-labelledby="login-tab">
                   <form class = "login-form">
                     <div class="form-group">
-                      <label for="username">Enter username:</label>
+                      <label for="username">Username or email:</label>
                       <input type="text" name="username" class = "form-control" id="username" required>
                     </div>
                     <div class="form-group">
@@ -43,11 +44,15 @@
                     </div>
                   </form>
                 </div>
-                <div class="tab-pane fade" style="background-color: rgb(0, 255, 149);" id="Sign-up" role="tabpanel" aria-labelledby="sign-up-tab"> 
+                <div class="tab-pane fade" id="Sign-up" role="tabpanel" aria-labelledby="sign-up-tab"> 
                   <form class = "sign-up-form">
                     <div class="form-group">
                       <label for="username">Create a username:</label>
                       <input type="text" name="username" class = "form-control" id="newUsername" required>  
+                    </div>
+                    <div class="form-group">
+                      <label for="newEmail">Email:</label>
+                      <input type="email" name="email" class = "form-control" id="newEmail" required>
                     </div>
                     <div class="form-group">
                       <label for="password">Password:</label>
