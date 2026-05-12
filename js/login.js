@@ -20,7 +20,7 @@ $(document).ready(function(){
 function userSignUp(newUsername,newPassword){
     var userdata={
         "username":newUsername,
-        "password":newPassword,
+        "password":newPassword
     }   
     var settings = {
         "async": true,
@@ -29,15 +29,14 @@ function userSignUp(newUsername,newPassword){
         "method": "POST",
         "headers": {
           "content-type": "application/json",
-          "x-apikey": "601fe54e3f9eb665a168922e",
+          "x-apikey": "YOUR_RESTDB_API_KEY",
           "cache-control": "no-cache"
         },
         "data":JSON.stringify(userdata)
       }
       
       $.ajax(settings).done(function (response) {
-        console.log(response);
-      });
+              });
 }
 
 function userLogin($loginUsername,$loginPassword){
@@ -48,7 +47,7 @@ function userLogin($loginUsername,$loginPassword){
         "method": "GET",
         "headers": {
           "content-type": "application/json",
-          "x-apikey": "601fe54e3f9eb665a168922e",
+          "x-apikey": "YOUR_RESTDB_API_KEY",
           "cache-control": "no-cache"
         }
     }
@@ -66,8 +65,6 @@ function userLogin($loginUsername,$loginPassword){
 </div>`; //loading animation content
  
     $.ajax(settings).done(function(response){
-        console.log(response);
-        console.log(response.length);
         let userFound = 0;
         for(var i = 0;i<response.length;i++){
             let user = response[i];
@@ -75,7 +72,7 @@ function userLogin($loginUsername,$loginPassword){
                 
                 userFound += 1; //value becomes zero after user is found
                 localStorage.setItem("User",user.username);
-                localStorage.setItem("API_KEY",user.API_KEY); //store api-key for usage in main.js
+                // Todoist token is connected later in main app (optional).
                 $('section.row').remove()            //clear login page for loading animation,whilst retaining script tags
                 $('section').prepend(loadContent);      
                 setTimeout(redirectToMain,2500);  //load up main interface

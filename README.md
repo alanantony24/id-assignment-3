@@ -1,162 +1,77 @@
-# ID-Assignment-3
+# OrDino (Archived Student Demo)
 
-# Problem Statement
-Nowadays,many youths,students and working adults are busy round the clock,and are very committed to their responsibilities.However,one common issue many people face is time management,caused by lack of planning and a lack of motivation.Hence,my teammate and I decided to come up with a website called orDino,which allows users to plan their schedule and organise their day-to-day events whilst leading stress-free lives. Not motivated or fascinated?? Fret not,this app will offer gamifying features for users to get going.
-## Intended Audience
-Working adults,students,professionals,even regular white-collar workers who have a common goal: _Organise the daily tasks and projects_
+OrDino is an archived front-end productivity/todo app prototype built for a school assignment.
+It keeps the original concept: organize tasks/projects and motivate progress through APPoints gamification.
 
-# API Info
-* [Todoist Rest API](https://developer.todoist.com/rest/v1/#overview)
+> Archived demo notice: this repository is educational and **not production-secure**.
 
-# General Features
+## Project overview
+- Static front-end app (HTML/CSS/JS + jQuery + Bootstrap).
+- App login/signup is independent from Todoist connection.
+- Login/sign-up demo flow stored in RestDB records.
+- Todo management connected to Todoist APIs.
+- Leaderboard/reward prototype for APPoints.
 
-### General 
-* **User Login/Sign Up:** Users must sign up or login to an OrDino user account 
-to use this app.
-### User accounts
-For the todoist API,we are incorporating a few custom users for our website flow.
-Since each user has his own set of projects,we decided to generate a few API keys for these users using our gmail (personal and school accounts).
-This would ensure that each user's projects&tasks are individualised ,smoothly read and written to.
+## Original context
+This codebase was created as a student web assignment and later cleaned up for safe archival/demo use.
 
-### User credentials
-No|User Name| Password | Email Address | API-KEY
---|---------|----------|---------------|---------|
-1.|amanadam|amanadam24|s10207327@connect.np.edu.sg|9ffb6de49236f049524d53010b0fe7e1b55a9175
-2.|kebabboy|mepro|s10204884@connect.np.edu.sg|091ba9ad13fb753c014adf401afbc0b3ce476db2
-3.|macho|nonono987|mahshuk410@gmail.com|74829a769468751c27ce5dbf7c162c31c6972322
-4.|mrbarbarian24|alanantony|alanantony050@gmail.com|69240a14af7f11d150b64bc00c5558cba3741041
+## Features
+- Landing page and brand identity.
+- Login/sign-up page.
+- Main app UI with projects, tasks, add modals, leaderboard, and rewards display.
+- Todoist-backed project/task CRUD actions.
 
+## Tech stack
+- HTML5
+- CSS3
+- JavaScript (ES6)
+- jQuery
+- Bootstrap 5
+- Todoist API v1 (`https://api.todoist.com/api/v1`)
+- RestDB.io
+- Moment.js + DateRangePicker
 
+## Setup instructions
+1. Clone/download this repository.
+2. Open `index.html` locally (or serve with any static server).
+3. Configure your own RestDB + Todoist credentials (no real credentials are included in this repo).
 
-# Gamification features
-### Points system
-We have implemented a three-tier system.
-Through which users can gain points for completing objectives,assigned to them
-Points : Anti-Procastination Points **_(APPoints)_**
-**The tiers are named after dinosaurs**
-Tier No.|Title |Points requirements|
---------|------|-------------------|
+## Todoist API token setup (local/demo)
+### 1) Generate a personal Todoist API token
+- Open Todoist account settings and create/copy your personal API token from Todoist developer/account token settings.
+- API docs reference used for this migration: `https://developer.todoist.com/api/v1/`.
 
-**Tier 1**|T-Rex Tyson |**_(>10000 APPoints)_**
-**Tier 2**| Velociraptor Vin |**_(>6000 APPoints)_**
-**Tier 3**| Seismosaurus Simon |**_(>2000 APPoints)_**
-Points System(Activities)
-==========================
-Create Task : 30 points
-Delete Task : -10 points
-Reschedule task: -100 points
-Complete Task : 80 points
+### 2) Paste token in app UI
+- Log in/sign up normally first (no Todoist token required).
+- After reaching `main.html`, use the **Connect Todoist** panel to paste your token.
+- Click **Save Token** to store it in `localStorage.API_KEY` for local/demo use.
 
-Create Project : 400 points
-Delete Project :  -200 points
-* first time users get 100 free APPoints
-This game is conducted in 3 cycles.
-Cycle 1 : January - March (April break)
-Cycle 2 :May- July (August Break)
-Cycle 3 : September - November (December Break)
-In 3 months,users can earn as much APPoints as they can.
-After 3 months,it will be reset.
+### 3) Important safety warning
+- **Never commit your token**.
+- Do not paste tokens into source files.
+- Do not paste tokens into `README.md`.
 
-REWARDS 
-=============================
-Tier 1
-===============
-Cycle 1:Cable Car Vouchers (8000 APPoints)     
-Cycle 2:Jewel Premium Lounge vouchers (8000 APPoints)
-cycle 3:Zoo tickets(2 people) (7000 APPoints)
+## API v1 migration note
+This project was migrated from older Todoist REST patterns to Todoist API v1 paths:
+- Base: `https://api.todoist.com/api/v1`
+- Projects: `/projects`
+- Tasks: `/tasks`
+- Task close/reopen/update/delete paths use v1 endpoints.
+- Authorization uses `Authorization: Bearer <token>`.
 
-Tier 2
-===============
-cycle 1:FairPrice Voucher $35 (4500 APPoints)
-cycle 2:PastaMania Voucher $25 (3000 APPoints)
-cycle 3:Andes by Astons Voucher $20 (2500 APPoints)
+## Security note
+- This is a static front-end demo and cannot truly hide API tokens.
+- Any token stored in browser storage is user-accessible by design.
+- Production-grade auth/secret handling requires a backend.
 
-Tier 3
-==================
-cycle 1:Bubble Tea Voucher ($5) (900 APPoints)
-cycle 2:McDonalds Coupon ($7) (1000 APPoints)
-cycle 3:7-Eleven Coupon($5) (800 APPoints)
+## Known limitations
+- Client-side auth pattern is educational, not secure.
+- Static front-end apps cannot safely keep long-lived secrets.
+- External CDN dependencies may break independently of this repo.
 
-### Purchase
-1 cycle :1 Purchase (Each eligibile User)
-Tier remains unchanged even if he falls short of category after purchase.(e.g.Points minus after voucher redemption)
+## Screenshots / demo placeholder
+- Add local screenshots here if desired.
 
-
-### Projects
-* Create a new project (e.g.Exam preparation,wedding Plans etc.)
-* Update an existing project
-* Get all projects                           
-* Get a specified project(_Search function_)
-* Delete a project (_done or not necessary_)
-
-### Tasks
-* Create a new task(e.g. Study for Maths paper,negotiate wedding caterers)
-> Specified,individual Tasks form up a project
-> Users can add as many tasks as they like to a project
-* Get active tasks(e.g. HTTP 'GET' method)
-* Completing a task (e.g. Mark as done,check off list)
-* Update a task (e.g. Modify due date/time,description etc.)
-* Open/Close task
-* Delete a task
-
-# Technologies Used
-1. HTML
-2. CSS,bootstrap 5.0.0
-3. JavaScript, Jquery v3.5.1 minfied
-4. Lottie Animations(Adobe After Effects)
-5. Visual Studio Code
-6.Restdb.io(NoSQL database)
-7.ionicons.com*for navbar icons*
-8.moment.js
-9.datepicker.css
-10. google fonts
-11. OBS Recorder (Video recording)
-
-# Design Rationale
-## App name
-> OrDino is originated from the Latin Language.In English,Ordino means :order/arrange, set in order; adjust, regulate; compose; 
-> Hence,OrDino was the suitable name for our Todoist API app.
-## Logo
-* A small dinosaur was illustrated to match with the app name's 2nd word "-Dino" .It is drawn with a pen being held to tell users about the 
-base functionality of the app - jotting/recording down tasks,reminders.![orDino App Logo](../assets/drawing.png)
-## Side Navbar(main.html)
-Responsive side navbar to navigate easily between
-* Add Project/Tasks
-* Inbox:Main page displaying all records of projects & task
-* Log Out
-*Reason:To improve User experience*
-
-# Credits and Acknowledgements
-* [W3Schools](w3schools.com)
-* https://www.jquery-az.com/bootstrap-datepicker-set-up-guide-with-8-online-demos-and-code/
-* https://codetogo.io/how-to-create-date-in-rfc3339-format-in-javascript/
-* https://www.geeksforgeeks.org/how-to-remove-arrow-in-dropdown-in-bootstrap
-
-## Images and GIF
-*[Flaticons.com](https://www.flaticon.com/authors/linector) 
- Author Name-Linector
-
-* [Cable Car gif](https://www.pinterest.com/pin/387239267958847590/)
-
-* [Freepik Pasta Image](https://www.freepik.com/vectors/food)  : Food vector created by macrovector 
-
-* [Freepik Supermarket Image](https://www.freepik.com/photos/food)  : Food photo created by pressfoto 
-
-* [7 eleven Image](https://commons.wikimedia.org/wiki/File:7-eleven_logo.svg)
-
-* [Andes By astons Image](https://www.facebook.com/ANDESbyAstons/photos/a.1631307650520315/1729928523991560/?type=3&theater)
-
-* [Jewel lounge image](https://www.traveller.com.au/singapore-why-singaporeans-love-their-airport-and-its-new-jewel-h1eauu)
-* 
-## Youtubers(Channels)
- * Coding Market
-* Web Dev Simplified
-* Code Tube
-* Coding Shiksha
-* Dani Krossing
-* freeCodeCamp
-* Brian design 
-* Bedim code
-
-## GITHUB link
-https://alanantony24.github.io/ID-Assignment-3/
+## Credits
+- Original OrDino student team.
+- Bootstrap, jQuery, Todoist docs, Moment.js, and DateRangePicker communities.
