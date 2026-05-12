@@ -14,7 +14,7 @@ function normalizeTodoistListResponse(response){
 function withTodoistAuth(settings){
     var token = getTodoistToken();
     if(!token){
-        showTodoistMessage("Connect Todoist to enable task/project sync.");
+        showTodoistMessage("Connect Todoist to enable task/project sync (optional).");
         return null;
     }
     settings.headers = settings.headers || {};
@@ -81,8 +81,8 @@ function refreshTodoistConnectionState(){
 var userPoints = 0;
 $(document).ready(function(){
     $('.toast').toast('show');  //initialise bootstrap toast
-    getUserPoints();            //initialise user points from restdb
-    userPoints = localStorage.getItem("APPoints");
+    getUserPoints();            //initialise user points from local demo storage
+    userPoints = localStorage.getItem("APPoints") || 0;
     displayName() //load first when ready
     initTodoistConnectionUI();
     refreshTodoistConnectionState();
@@ -307,7 +307,9 @@ function logOutUser(logOutContent){
   $mainPage.remove();
   $('body').prepend(logOutContent);
   setTimeout(redirectToHome,2500);
-  localStorage.clear(); //to clear previous user data,credentials to being carried forward to subsequent user.
+  localStorage.removeItem("User");
+  localStorage.removeItem("ORDINO_CURRENT_USER");
+  localStorage.removeItem("APPoints"); // keep Todoist token separate unless user disconnects manually.
 }
 function redirectToHome(){
     window.location.replace("index.html");
@@ -352,7 +354,7 @@ reschedulebutton.addEventListener('click', function(){
     var rescheduleDate  =  $('input#picker').val();
     rescheduleDate = new Date(rescheduleDate).toISOString(); // convert to ISO format
     rescheduleCount += 1;
-    updatePoints(API_KEY); //update restdb
+    updatePoints(API_KEY); //update local points store
 })    
 $("#picker").hide();
 function showCalendar(){
@@ -387,30 +389,11 @@ function showStore(){
     $('div.user-points h5').text(`APPoints:${localStorage.getItem("APPoints")}`);
 }
 function getUserPoints(){
-    var settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": "https://ordinouserrecords-4526.restdb.io/rest/ordino-user-records",
-        "method": "GET",
-        "headers": {
-          "content-type": "application/json",
-          "x-apikey": "YOUR_RESTDB_API_KEY",
-          "cache-control": "no-cache"
-        }
-    }
-      
-    $.ajax(settings).done(function (response) {
-        for(let i =0;i<response.length;i++){
-            let user = response[i];
-            userPoints = user.APPoints;
-            var Tier = user.Tier;
-            if(API_KEY == user.API_KEY){
-                localStorage.setItem("APPoints",user.APPoints); //get the current user APPoints
-                break;
-            }
-            
-        }
-    });
+    var currentUser = JSON.parse(localStorage.getItem("ORDINO_CURRENT_USER") || "null");
+    if(!currentUser){ return; }
+    var pointsByUser = JSON.parse(localStorage.getItem("ORDINO_POINTS") || "{}");
+    var points = pointsByUser[currentUser.username] || 0;
+    localStorage.setItem("APPoints", points);
 }
 //code gotten from W3Schools
 //Get the button
@@ -445,7 +428,7 @@ var userCreatedTasks = 0;
 var userDelTasks = 0;
 var userCompTasks = 0;
 var userTier = 0;
-//APPoints variable will be stored in restdb -default 100
+//APPoints variable stored in local demo storage
 // basic points
 var createTask = 30;
 var deleteTask = -10;
@@ -477,7 +460,7 @@ addtaskbtn.addEventListener('click', function(){
     count = count + 1;
     if(count == 1){
         userCreatedTasks+=1; //update userCreatedTasks
-        updatePoints(API_KEY); //update restdb
+        updatePoints(API_KEY); //update local points store
     }
 })
 //creating project
@@ -487,7 +470,7 @@ addprojbtn.addEventListener('click', function(){
     count = count + 1;
     if(count == 1){
         userCreatedProjects+=1; //updated userCreatedProjects
-        updatePoints(API_KEY); //update restdb
+        updatePoints(API_KEY); //update local points store
     }
 })
 //we have tested all the vairable but for some reason it does not work. We honestly dont know why.
@@ -503,107 +486,37 @@ function deleteProj(pList, API_KEY){
 }
 //main sort function gotten from w3schools
 function sortUserPoints(pointsList){
-    var settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": "https://ordinouserrecords-4526.restdb.io/rest/ordino-user-records",
-        "method": "GET",
-        "headers": {
-          "content-type": "application/json",
-          "x-apikey": "YOUR_RESTDB_API_KEY",
-          "cache-control": "no-cache"
-        }
-      }
-      
-      $.ajax(settings).done(function (response) {
-        for(let i =0;i<response.length;i++){
-            let points = response[i].APPoints
-            pointsList.push(points);
-        }
-              });
-
-    pointsList = pointsList.sort(function(a, b){return b-a}); //w3schools
+    pointsList.length = 0;
+    var pointsByUser = JSON.parse(localStorage.getItem("ORDINO_POINTS") || "{}");
+    Object.keys(pointsByUser).forEach(function(username){
+        pointsList.push({ username: username, APPoints: pointsByUser[username] });
+    });
+    pointsList.sort(function(a,b){ return b.APPoints - a.APPoints; });
 }
-function getAllGameRecords(){ //for the leaderboard ranking
-    var settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": "https://ordinouserrecords-4526.restdb.io/rest/ordino-user-records",
-        "method": "GET",
-        "headers": {
-          "content-type": "application/json",
-          "x-apikey": "YOUR_RESTDB_API_KEY",
-          "cache-control": "no-cache"
-        }
-      }
-      
-      $.ajax(settings).done(function (response) {
-                var tableContent = "";
-        for(let x =0 ;x<pointsList.length;x++){
-            for(let i =0;i<response.length;i++){
-                let user = response[i];
-                var Tier = user.Tier;
-                if (Tier == 0){
-                    Tier = "NA"
-                }    
-                if(user.APPoints == pointsList[x]){
-                    tableContent+=`<tr>
-                    <th scope="row">${i+1}</th>
-                    <td>${user.username}</td>
-                    <td>${user.APPoints}</td>
-                    <td>${Tier}</td>
-                  </tr>`
-        
-                }
-            }
-        }
-        $('#leaderboard table').children('tbody').html(tableContent);
-      });
-
+function getAllGameRecords(){
+    var tableContent = "";
+    for(let i=0;i<pointsList.length;i++){
+        let rec = pointsList[i];
+        tableContent += `<tr><th scope="row">${i+1}</th><td>${rec.username}</td><td>${rec.APPoints}</td><td>Local Demo</td></tr>`;
+    }
+    if(!tableContent){
+        tableContent = '<tr><td colspan="4">No local leaderboard data yet.</td></tr>';
+    }
+    $('#leaderboard table').children('tbody').html(tableContent);
 }
 function updatePoints(API_KEY){
     userPoints = (userCompTasks * completedTask) + (userCreatedTasks * createTask) + (userDelTasks * deleteTask) + (rescheduleCount * rescheduleTask) + (userCreatedProjects * createProject) + (userDelProjects * delProject);
-    if (userPoints >= tier3 && userPoints < tier2){
-        userTier = 3;
-    }
-    else if (userPoints>=tier2 && userPoints < tier1){
-        userTier = 2;
-    }
-    else if (userPoints >= tier1){
-        userTier = 1;
-    }
-    else {
-        userTier = 0;
-    }
-    var idReference = {
-        "YOUR_TODOIST_API_TOKEN":"YOUR_RESTDB_RECORD_ID"
-    };    
-    var jsondata = {
-        "created_projects":userCreatedProjects,
-        "deleted_projects":userDelProjects,
-        "APPoints":userPoints,
-        "reschedule_count":rescheduleCount,
-        "created_tasks":userCreatedTasks,
-        "deleted_tasks":userDelTasks,
-        "completed_tasks":userCompTasks,
-        "Tier":userTier
-    };
-    var settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": `https://ordinouserrecords-4526.restdb.io/rest/ordino-user-records/${idReference[API_KEY]}`,
-        "method": "PUT",
-        "headers": {
-          "content-type": "application/json",
-          "x-apikey": "YOUR_RESTDB_API_KEY",
-          "cache-control": "no-cache"
-        },
-        "processData": false,
-        "data": JSON.stringify(jsondata)
-    };
-      
-    $.ajax(settings).done(function(response) {
-            });
+    if (userPoints >= tier3 && userPoints < tier2){ userTier = 3; }
+    else if (userPoints>=tier2 && userPoints < tier1){ userTier = 2; }
+    else if (userPoints >= tier1){ userTier = 1; }
+    else { userTier = 0; }
+
+    var currentUser = JSON.parse(localStorage.getItem("ORDINO_CURRENT_USER") || "null");
+    if(!currentUser){ return; }
+    var pointsByUser = JSON.parse(localStorage.getItem("ORDINO_POINTS") || "{}");
+    pointsByUser[currentUser.username] = userPoints;
+    localStorage.setItem("ORDINO_POINTS", JSON.stringify(pointsByUser));
+    localStorage.setItem("APPoints", userPoints);
 }
 //js to cycle through the different month rewards
 
