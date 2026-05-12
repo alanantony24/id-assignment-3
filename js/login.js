@@ -6,7 +6,8 @@ $(document).ready(function(){
         var $newUsername = $('form.sign-up-form').children().first().children('input#newUsername').val();
         var $newPassword = $('form.sign-up-form').children().eq(1).children('input#newPassword').val();
       
-        userSignUp($newUsername,$newPassword);
+        var $signupToken = $('form.sign-up-form input#newTodoistToken').val().trim();
+        userSignUp($newUsername,$newPassword,$signupToken);
     });
 
     $loginBtn = $('form.login-form').children().eq(2).children('input#login-button');
@@ -14,44 +15,45 @@ $(document).ready(function(){
         e.preventDefault();
         let $loginUsername = $('form.login-form').children().first().children('input:text#username').val();
         let $loginPassword = $('form.login-form').children().eq(1).children('input:password#password').val();
-        userLogin($loginUsername, $loginPassword);
+        let $loginToken = $('form.login-form input#todoistToken').val().trim();
+        userLogin($loginUsername, $loginPassword, $loginToken);
     });
 });
-function userSignUp(newUsername,newPassword){
+function userSignUp(newUsername,newPassword,newTodoistToken){
     var userdata={
         "username":newUsername,
         "password":newPassword,
+        "API_KEY": newTodoistToken
     }   
     var settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": "https://ordinouserrecords-4526.restdb.io/rest/ordino-user-records",
-        "method": "POST",
-        "headers": {
-          "content-type": "application/json",
-          "x-apikey": "601fe54e3f9eb665a168922e",
-          "cache-control": "no-cache"
-        },
-        "data":JSON.stringify(userdata)
-      }
+      async: true,
+      crossDomain: true,
+      url: "https://ordinouserrecords-4526.restdb.io/rest/ordino-user-records",
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-apikey": "601fe54e3f9eb665a168922e",
+        "cache-control": "no-cache",
+      },
+      data: JSON.stringify(userdata),
+    };
       
       $.ajax(settings).done(function (response) {
-        console.log(response);
-      });
+              });
 }
 
-function userLogin($loginUsername,$loginPassword){
+function userLogin($loginUsername,$loginPassword,loginTokenInput){
     var settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": "https://ordinouserrecords-4526.restdb.io/rest/ordino-user-records",
-        "method": "GET",
-        "headers": {
-          "content-type": "application/json",
-          "x-apikey": "601fe54e3f9eb665a168922e",
-          "cache-control": "no-cache"
-        }
-    }
+      async: true,
+      crossDomain: true,
+      url: "https://ordinouserrecords-4526.restdb.io/rest/ordino-user-records",
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+        "x-apikey": "601fe54e3f9eb665a168922e",
+        "cache-control": "no-cache",
+      },
+    };
     let loadContent = `
 
     <div class ="row justify-content-center align-self-center">
@@ -66,8 +68,6 @@ function userLogin($loginUsername,$loginPassword){
 </div>`; //loading animation content
  
     $.ajax(settings).done(function(response){
-        console.log(response);
-        console.log(response.length);
         let userFound = 0;
         for(var i = 0;i<response.length;i++){
             let user = response[i];
@@ -75,7 +75,12 @@ function userLogin($loginUsername,$loginPassword){
                 
                 userFound += 1; //value becomes zero after user is found
                 localStorage.setItem("User",user.username);
-                localStorage.setItem("API_KEY",user.API_KEY); //store api-key for usage in main.js
+                var tokenToUse = loginTokenInput || user.API_KEY;
+                if(!tokenToUse){
+                    alert("Please paste your Todoist API token to continue.");
+                    return;
+                }
+                localStorage.setItem("API_KEY", tokenToUse); //store token for usage in main.js
                 $('section.row').remove()            //clear login page for loading animation,whilst retaining script tags
                 $('section').prepend(loadContent);      
                 setTimeout(redirectToMain,2500);  //load up main interface
