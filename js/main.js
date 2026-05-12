@@ -99,10 +99,7 @@ $(document).ready(function(){
             var accordionLength = document.querySelectorAll('.accordion-item');
         }
     })
-    $inboxTab.off("focus",function(){
-        alert("Ufffffff!")
-        clickCount = 0; //reset
-    })
+    $inboxTab.off("focus",function(){ clickCount = 0; })
     var $leaderBoardTab = $('nav.nav1').children().children().eq(1).children().eq(3);
     $leaderBoardTab.on('click',function(){
         var clickCount = 1;
@@ -123,6 +120,8 @@ $(document).ready(function(){
         e.preventDefault();
         alert('sup')
     });
+    var $editIcon = $('div.accordion-body button#update');
+    $editIcon.on("click",function(e){ e.preventDefault(); });
     $('a:contains("View Comments")').on('click',function(){         //when user clicks on view comments
         var selectedTaskName = $('[aria-expanded=true]').text().trim()
                 $('h5.taskNameinModal').text(selectedTaskName);
@@ -386,7 +385,7 @@ function hideStore(){
 }
 function showStore(){
     $('#store').show(1000);
-    $('div.user-points h5').text(`APPoints:${localStorage.getItem("APPoints")}`);
+    $('div.user-points h5').text(`APPoints:${localStorage.getItem("APPoints") || 0}`);
 }
 function getUserPoints(){
     var currentUser = JSON.parse(localStorage.getItem("ORDINO_CURRENT_USER") || "null");
@@ -580,7 +579,7 @@ prizeList = {
                 var voucherCost = prizeList[i].price;
                 if(userPoints >= voucherCost){
                     userPoints -= voucherCost;
-                    alert("Voucher redemption successful");
+                    setSectionMessage("#store", "Voucher redemption successful (demo).", "success");
                 }
                 else{
                     //display alert toast
@@ -604,4 +603,3 @@ function displayToast(){
     var toast = document.getElementById("toastcompleted")
     toast.style.display = "block";
 }
-

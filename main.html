@@ -68,11 +68,11 @@
                 <ion-icon name="construct-outline" class="nav__icon"></ion-icon>
                 <span class="nav__name">Add Task<span><ion-icon name="add-outline" class="addtask"></ion-icon></span></span>
               </a>
-              <a onclick="hideSection();showLeaderBoard();hideStore()" href="#leaderboard" data-bs-toggle="nav__link" data-bs-target="#" class="nav__link">
+              <a onclick="hideSection();showLeaderBoard();hideStore()" href="#leaderboard" class="nav__link">
                 <ion-icon name="medal-outline" class="nav__icon"></ion-icon>
                 <span class="nav__name">APP Leaderboard</span>
               </a>
-              <a onclick="hideSection();hideLeaderBoard();showStore()" href="#store" data-bs-toggle="nav__link" data-bs-target="#" class="nav__link">
+              <a onclick="hideSection();hideLeaderBoard();showStore()" href="#store" class="nav__link">
                 <ion-icon name="cart-outline" class="nav__icon"></ion-icon>
                 <span class="nav__name">Ordino rewards</span>
               </a>
@@ -156,7 +156,7 @@
       </div>
     </section>
     <!--Panels for displaying Project and task details-->
-    <section id="inbox">
+    <section id="inbox" class="content-section">
       <div class="container">
         <div class="row">
           <div class="col-sm-6">
@@ -169,7 +169,7 @@
             <div id="getalltasks">
             </div>
             <div class = "fixed">
-              <button id = "topBtn" onclick="TopFunction()"> 
+              <button id = "topBtn" onclick="TopFunction()" aria-label="Back to top"> 
                 <div class="top-arrow">
                   <ion-icon name="chevron-up-outline"></ion-icon>
                 </div>
@@ -189,7 +189,7 @@
       </div>
     </div>
     <!--Section for leaderboard-->
-    <section id="leaderboard" style = "display: none;">
+    <section id="leaderboard" class="content-section" style = "display: none;">
       <div class="container leaderboardtable">
         <div class="row">
           <div class="col-sm-5">
@@ -226,88 +226,95 @@
         </div> -->
       </div>
     </section> 
-    <div class="container" id="store" style="display: none;">
+    <div class="container content-section" id="store" style="display: none;">
+      <p class="store-note">Redeem rewards with APPoints. Demo rewards are local and non-transactional.</p>
       <div class="user-points">
         <span><ion-icon name="cash-outline"></ion-icon></span>
         <span><h5 class="text-center"></h5></span>
       </div> 
       <div class="row"><h4>January-March(Cycle 1)</h4></div>
       <div class="row justify-content-between">
-        <div class="col-sm-3 align-item-center cardbg">
+        <div class="col-sm-3 align-item-center cardbg reward-card">
           <img style="display: none;" src="assets/CableCar.gif" alt="GIF of a cable Car" width="300" height=auto>
           <h5 class="text-center">Cable Car Voucher</h5>
           <h5 class="text-center">Tier 1 Prize</h5>
-          <h5 class="text-center">8000 APP</h5>
-          <button style="display: none;" class="btn btn-primary">Purchase</button>
+          <h5 class="text-center reward-cost">8000 APP</h5>
+          <button style="display: none;" class="btn btn-primary">Redeem</button>
         </div>
-        <div class="col-sm-3 cardbg">
+        <div class="col-sm-3 cardbg reward-card">
           <img style="display: none;" src="assets/shopping_cart.jpg" alt="Image of Filled Supermarket trolley" width = "300" height = "auto">
           <h5 class="text-center">FairPrice Voucher</h5>
           <h5 class="text-center">Tier 2 Prize</h5>
-          <h5 class="text-center">4500 APP</h5>
-          <button style="display: none;" class="btn btn-primary">Purchase</button>
+          <h5 class="text-center reward-cost">4500 APP</h5>
+          <button style="display: none;" class="btn btn-primary">Redeem</button>
         </div>
-        <div class="col-sm-3 cardbg">
+        <div class="col-sm-3 cardbg reward-card">
           <lottie-player style="display: none;" src="https://assets1.lottiefiles.com/packages/lf20_NiUhhS.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px;"  loop  autoplay></lottie-player>
           <h5 class="text-center">Bubble Tea Voucher ($5)</h5>
           <h5 class="text-center">Tier 3 Prize</h5>
-          <h5 class="text-center">900 APP</h5>
-          <button style="display: none;" class="btn btn-primary">Purchase</button>
+          <h5 class="text-center reward-cost">900 APP</h5>
+          <button style="display: none;" class="btn btn-primary">Redeem</button>
         </div>
       </div>
       <div class="row"><h4>May-July(Cycle 2)</h4></div>
       <div  class="row justify-content-between">
-        <div class="col-sm-3 align-item-center cardbg">
+        <div class="col-sm-3 align-item-center cardbg reward-card">
           <img style="display: none;" src="assets/Jewel-lounge.jpg" alt="Image of Jewel Lounge" width = "300" height = "auto">
           <h5 class="text-center">Jewel lounge Entry For 1</h5>
           <h5 class="text-center">Tier 1 Prize</h5>
-          <h5 class="text-center">8000 APP</h5>
+          <h5 class="text-center reward-cost">8000 APP</h5>
+          <button style="display: none;" class="btn btn-primary">Redeem</button>
         </div>
-        <div class="col-sm-3 cardbg">
+        <div class="col-sm-3 cardbg reward-card">
           <img style="display: none;" src="assets/pasta-image.jpg" alt="Pasta poster" width = "300" height = "auto">
           <h5 class="text-center">Pastamania Voucher</h6>
           <h5 class="text-center">Tier 2 Prize</h5>
-          <h5 class="text-center">3000 APP</h5>
+          <h5 class="text-center reward-cost">3000 APP</h5>
+          <button style="display: none;" class="btn btn-primary">Redeem</button>
         </div>
-        <div class="col-sm-3 cardbg">
+        <div class="col-sm-3 cardbg reward-card">
           <lottie-player style="display: none;" src="https://assets2.lottiefiles.com/packages/lf20_cXVf2b.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px;"  loop  autoplay></lottie-player>
           <h5 class="text-center">McDonalds Coupon ($7)</h5>
           <h5 class="text-center">Tier 3 Prize</h5>
-          <h5 class="text-center">1000 APP</h5>
+          <h5 class="text-center reward-cost">1000 APP</h5>
+          <button style="display: none;" class="btn btn-primary">Redeem</button>
         </div>
       </div>
       <div class="row">
         <h4>September-November(Cycle 3)</h4>
       </div>
       <div class="row justify-content-between">
-        <div class="col-sm-3 align-item-center cardbg">
+        <div class="col-sm-3 align-item-center cardbg reward-card">
           <lottie-player style="display: none;" src="https://assets2.lottiefiles.com/packages/lf20_lb6Gsk.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px;"  loop  autoplay></lottie-player>
           <h5 class="text-center">Singapore Zoo tickets for 2</h5>
           <h5 class="text-center">Tier 1 Prize</h5>
-          <h5 class="text-center">7000 APP</h5>
+          <h5 class="text-center reward-cost">7000 APP</h5>
+          <button style="display: none;" class="btn btn-primary">Redeem</button>
         </div>
-        <div class="col-sm-3 cardbg">
+        <div class="col-sm-3 cardbg reward-card">
           <img style="display: none;" src="assets/andes_by_astons.jpg" alt="Poster of Andes By Astons Menu" width="300" height ="auto">
           <h5 class="text-center">Andes By Astons Voucher($20)</h5>
           <h5 class="text-center">Tier 2 Prize</h5>
-          <h5 class="text-center">2500 APP</h5>
+          <h5 class="text-center reward-cost">2500 APP</h5>
+          <button style="display: none;" class="btn btn-primary">Redeem</button>
         </div>
-        <div class="col-sm-3 cardbg">
+        <div class="col-sm-3 cardbg reward-card">
           <img style="display: none;" src="assets/7-eleven_logo.svg.png" alt="7 eleven logo" width = "300" height = "auto">
           <h5 class="text-center">7-11 Voucher($5)</h5>
           <h5 class="text-center">Tier 3 Prize</h5>
-          <h5 class="text-center">800 APP</h5>
+          <h5 class="text-center reward-cost">800 APP</h5>
+          <button style="display: none;" class="btn btn-primary">Redeem</button>
         </div>
       </div>
       <div class = "fixed">
-        <button id = "topBtn" onclick="TopFunction()"> 
+        <button id = "topBtn" onclick="TopFunction()" aria-label="Back to top"> 
           <div class="top-arrow">
             <ion-icon name="chevron-up-outline"></ion-icon>
           </div>
         </button>
       </div>
       <!-- Code adapted from Bootstrap 5.0 (for the toast)--> 
-      <div class="toast-container" style = "display: none;" class="position-fixed bottom-50 end-0 p-3" style="z-index: 5">
+      <div class="toast-container position-fixed bottom-50 end-0 p-3" style="display:none; z-index:5;">
         <div class="toast" role="alert"  aria-live="assertive" aria-atomic="true"  data-bs-autohide="false">
             <div class="toast-header">
             <strong class="me-auto">Insufficient APPoints</strong>
