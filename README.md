@@ -1,23 +1,24 @@
 # OrDino (Archived Student Demo)
 
-OrDino is an archived front-end productivity/todo web app prototype created for a school assignment.
-It combines task organization with light gamification (APPoints tiers and rewards) to encourage consistency.
+OrDino is an archived front-end productivity/todo app prototype built for a school assignment.
+It keeps the original concept: organize tasks/projects and motivate progress through APPoints gamification.
 
-> Archived demo notice: This repository is preserved as a student project. It is **not production-safe** and uses simplified client-side patterns for learning purposes.
+> Archived demo notice: this repository is educational and **not production-secure**.
+
+## Project overview
+- Static front-end app (HTML/CSS/JS + jQuery + Bootstrap).
+- Login/sign-up demo flow stored in RestDB records.
+- Todo management connected to Todoist APIs.
+- Leaderboard/reward prototype for APPoints.
 
 ## Original context
-- Built as a static website assignment focused on UI, API integration, and gamification concepts.
-- Core concept preserved: users sign in, manage Todoist tasks/projects, and track APPoints/reward tiers.
+This codebase was created as a student web assignment and later cleaned up for safe archival/demo use.
 
 ## Features
-- Landing page with OrDino branding and app concept.
-- Login/Sign-up interface (demo-style, client-side flow).
-- Main dashboard with:
-  - Project list
-  - Active task list
-  - Add project/task modals
-  - Leaderboard and rewards panels
-  - APPoints mechanics
+- Landing page and brand identity.
+- Login/sign-up page.
+- Main app UI with projects, tasks, add modals, leaderboard, and rewards display.
+- Todoist-backed project/task CRUD actions.
 
 ## Tech stack
 - HTML5
@@ -25,48 +26,51 @@ It combines task organization with light gamification (APPoints tiers and reward
 - JavaScript (ES6)
 - jQuery
 - Bootstrap 5
-- Todoist REST API (user-provided token)
-- RestDB.io (user-provided database + API key)
+- Todoist API v1 (`https://api.todoist.com/api/v1`)
+- RestDB.io
 - Moment.js + DateRangePicker
-- Ionicons + Lottie assets
 
 ## Setup instructions
-1. Clone or download this repository.
-2. Open `index.html` directly in a browser, or serve the folder with a simple static server.
-3. Configure API credentials (see below) before expecting live API features to work.
+1. Clone/download this repository.
+2. Open `index.html` locally (or serve with any static server).
+3. Configure your own RestDB + Todoist credentials (no real credentials are included in this repo).
 
-## API configuration (required for live data)
-This project no longer ships with real credentials.
+## Todoist API token setup (local/demo)
+### 1) Generate a personal Todoist API token
+- Open Todoist account settings and create/copy your personal API token from Todoist developer/account token settings.
+- API docs reference used for this migration: `https://developer.todoist.com/api/v1/`.
 
-Replace placeholders in JavaScript with your own values:
-- `YOUR_RESTDB_API_KEY`
-- `YOUR_TODOIST_API_TOKEN`
+### 2) Paste token in app UI
+- Go to `login.html`.
+- Use the **Todoist API Token** field in Login (or Sign Up).
+- On submit, token is stored in `localStorage.API_KEY` for this local demo session.
 
-Current placeholder locations:
-- `js/login.js`
-- `js/main.js`
+### 3) Important safety warning
+- **Never commit your token**.
+- Do not paste tokens into source files.
+- Do not paste tokens into `README.md`.
 
-Notes:
-- Login/sign-up here is demo-style and client-side.
-- For real-world usage, move authentication and secret handling to a secure backend.
+## API v1 migration note
+This project was migrated from older Todoist REST patterns to Todoist API v1 paths:
+- Base: `https://api.todoist.com/api/v1`
+- Projects: `/projects`
+- Tasks: `/tasks`
+- Task close/reopen/update/delete paths use v1 endpoints.
+- Authorization uses `Authorization: Bearer <token>`.
 
 ## Security note
-- This is an archived student demo and is **not production-ready**.
-- Do not store plaintext passwords or secrets in front-end code.
-- Do not expose API keys in public repositories.
-- Treat this codebase as educational/reference only.
+- This is a static front-end demo and cannot truly hide API tokens.
+- Any token stored in browser storage is user-accessible by design.
+- Production-grade auth/secret handling requires a backend.
 
 ## Known limitations
-- Client-side login architecture is insecure by design.
-- API availability depends on your own RestDB/Todoist setup.
-- Some gamification rules are prototype-level and not fully hardened.
-- External CDN assets (Lottie/JS libs) can fail if upstream URLs change.
+- Client-side auth pattern is educational, not secure.
+- Static front-end apps cannot safely keep long-lived secrets.
+- External CDN dependencies may break independently of this repo.
 
-## Screenshots / demo
-- Add screenshots in this section if you want to document your local demo state.
-- Optional: include a hosted demo link if you deploy with your own credentials.
+## Screenshots / demo placeholder
+- Add local screenshots here if desired.
 
 ## Credits
-- Student creators of the original OrDino assignment.
-- Bootstrap, jQuery, Moment.js, DateRangePicker, Ionicons, and Lottie communities.
-- Learning references originally included by the student team.
+- Original OrDino student team.
+- Bootstrap, jQuery, Todoist docs, Moment.js, and DateRangePicker communities.

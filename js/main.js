@@ -1,4 +1,44 @@
-var API_KEY =localStorage.getItem("API_KEY");//global api-key modified in ajax for general use
+var TODOIST_API_BASE = "https://api.todoist.com/api/v1";
+var API_KEY = localStorage.getItem("API_KEY");//global token from localStorage
+
+function getTodoistToken(){
+    return (localStorage.getItem("API_KEY") || "").trim();
+}
+
+function normalizeTodoistListResponse(response){
+    if(Array.isArray(response)) return response;
+    if(response && Array.isArray(response.results)) return response.results;
+    return [];
+}
+
+function withTodoistAuth(settings){
+    var token = getTodoistToken();
+    if(!token){
+        showTodoistMessage("Please paste your Todoist API token on Login before using tasks/projects.");
+        return null;
+    }
+    settings.headers = settings.headers || {};
+    settings.headers["Authorization"] = `Bearer ${token}`;
+    return settings;
+}
+
+function showTodoistMessage(message){
+    var msg = `<div class="alert alert-warning mt-2" role="alert">${message}</div>`;
+    $("#getallproj").html(msg);
+    $("#getalltasks").html(msg);
+}
+
+function handleTodoistError(xhr){
+    if(xhr && (xhr.status === 401 || xhr.status === 403)){
+        showTodoistMessage("Todoist token is missing or invalid. Please paste a valid token on the login page.");
+        return;
+    }
+    if(xhr && xhr.status === 404){
+        showTodoistMessage("Requested Todoist resource was not found.");
+        return;
+    }
+    showTodoistMessage("Unable to reach Todoist right now. Please try again.");
+}
 var userPoints = 0;
 $(document).ready(function(){
     $('.toast').toast('show');  //initialise bootstrap toast
@@ -81,26 +121,20 @@ var taskList = []
 //Function for getting the projects
 function getAllProjects(colorArray){
     var content = '<div class="accordion accordion-flush" id="accordionFlushExample"></div>';
-    var settings = {
-        "url":"https://api.todoist.com/rest/v1/projects",
+    var settings = withTodoistAuth({
+        "url":`${TODOIST_API_BASE}/projects`,
         "method":"GET",
-        "headers":{
-            "Content-Type":"application/json",
-            "Authorization":`Bearer ${API_KEY}`
-        }
-    };
+        "headers":{"Content-Type":"application/json"}
+    });
+    if(!settings){ return; }
     $.ajax(settings).done(function(response){
-                var color = "";
-        for(let i =0;i<response.length;i++){
-            // if(response[i].hasOwnProperty("color")){
-            //     color = response[i].color;
-            // }
-            pList = response;
-           
+        var projects = normalizeTodoistListResponse(response);
+        pList = projects;
+        for(let i =0;i<projects.length;i++){
             content += `<div class="accordion-item">
               <h2 class="accordion-header" id="flush-heading${i+1}">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapses${i+1}" aria-expanded="false" aria-controls="flush-collapse${i+1}">
-                ${response[i].name}
+                ${projects[i].name}
                 </button>
               </h2>
               <div id="flush-collapses${i+1}" class="accordion-collapse collapse" aria-labelledby="flush-heading${i+1}" data-bs-parent="#accordionFlushExample">
@@ -111,16 +145,9 @@ function getAllProjects(colorArray){
                 </div>
               </div>
             </div>`
-            // content+=`<div class = "project-item"> <span><h4>${response[i].name}</h4></span>
-            // <span class = "project-color"></span></div>`;
-            if(color !== ""){
-                $('.project-color').css('background-color',`${colorArray[color]}`.toString());
-                console.log(colorArray[color]);
-            }
         }
-        var projectList = document.getElementById("getallproj");
-        projectList.innerHTML = content;
-    })  
+        document.getElementById("getallproj").innerHTML = content;
+    }).fail(handleTodoistError);
 };
 //Function for creating a project
 $('button#addprojbtn').on("click",function(e){
@@ -129,47 +156,33 @@ $('button#addprojbtn').on("click",function(e){
     createNewProject(projectName, API_KEY);
 });
 function createNewProject(pName,API_KEY){ //POST method
-    var projectInfo = {
-        "name":pName
-    }
-    var settings = {
-        "url":"https://api.todoist.com/rest/v1/projects",
+    var projectInfo = {"name":pName};
+    var settings = withTodoistAuth({
+        "url":`${TODOIST_API_BASE}/projects`,
         "method":"POST",
-        "headers":{
-            "Content-Type":"application/json",
-            "Authorization":`Bearer ${API_KEY}`
-            //"X-Request-Id":""
-        },
+        "headers":{"Content-Type":"application/json"},
         "data":JSON.stringify(projectInfo)
-    };
-    $.ajax(settings).done(function(response){
-                hideModal();
-        function hideModal(){
-            $("#addProj").modal('toggle');
-        }
-    })
+    });
+    if(!settings){ return; }
+    $.ajax(settings).done(function(){
+        $("#addProj").modal('toggle');
+    }).fail(handleTodoistError)
 }
 //deleting a project
 function deleteProject(deleteId,API_KEY){
-    var settings = {
-        "url":`https://api.todoist.com/rest/v1/projects/${deleteId}`,
+    var settings = withTodoistAuth({
+        "url":`${TODOIST_API_BASE}/projects/${String(deleteId)}`,
         "method":"DELETE",
-        "statusCode":{
-            204:function(){
-                alert(`Project Id:${deleteId} has been deleted!`);
-            }
-        },
-        "headers":{
-            "Authorization":`Bearer ${API_KEY}`
-        }
-    }
-    $.ajax(settings).done(function(response){
-                if(response  === undefined){
-            userDelProjects += 1;
-            updatePoints(API_KEY);  //update RestDB
-            alert(`Project ID:${deleteId} has been deleted successfully.`);
-        }
+        "statusCode":{204:function(){ alert(`Project Id:${deleteId} has been deleted!`);} },
+        "headers":{}
     });
+    if(!settings){ return; }
+    $.ajax(settings).done(function(response){
+        if(response  === undefined){
+            userDelProjects += 1;
+            updatePoints(API_KEY);
+        }
+    }).fail(handleTodoistError);
 }
 //creating a task
 $('button#addtask').on("click",function(e){
@@ -182,105 +195,38 @@ $('input#task_datetime').on('blur',function(){
     dueDate = $('input#task_datetime').val()
         });
 function createNewTask(taskName,API_KEY, dueDate){
-    if(dueDate === '' || dueDate === undefined){
-        alert("Empty")
-    }
-    var taskInfo = {
-        "content":taskName,
-        "due_date": dueDate,
-        //"due_string": "tomorrow at 12:00", 
-        "due_lang": "en", 
-        "priority": 4
-    } 
-    var settings = {
-        "url":`https://api.todoist.com/rest/v1/tasks`,
-        "method":"POST",
-        "headers":{
-            "Content-Type":"application/json",
-            "Authorization":`Bearer ${API_KEY}`
-        },
-        "data":JSON.stringify(taskInfo)
-    }
-    $.ajax(settings).done(function(response){
-       
-        hideModal();
-        function hideModal(){
-            $("#addTask").modal('toggle');
-        }
+    if(dueDate === '' || dueDate === undefined){ alert("Please select a due date"); return; }
+    var taskInfo = {"content":taskName,"due_date": dueDate,"due_lang": "en","priority": 4};
+    var settings = withTodoistAuth({
+        "url":`${TODOIST_API_BASE}/tasks`,"method":"POST",
+        "headers":{"Content-Type":"application/json"},"data":JSON.stringify(taskInfo)
     });
+    if(!settings){ return; }
+    $.ajax(settings).done(function(){ $("#addTask").modal('toggle'); }).fail(handleTodoistError);
 }
 //get active Task
 function getActiveTasks(API_KEY){
     var tasks ='';
-    var settings = {
-        "url":`https://api.todoist.com/rest/v1/tasks`,
-        "method":"GET",
-        "headers":{
-            "Authorization":`Bearer ${API_KEY}`
-        }
-    }
+    var settings = withTodoistAuth({"url":`${TODOIST_API_BASE}/tasks`,"method":"GET","headers":{}});
+    if(!settings){ return; }
     $.ajax(settings).done(function(response){
-        
-        taskList = response;
-        for(let i =0;i<response.length;i++){
-            
-            tasks+=`<div class="accordion-item">
-            <h2 class="accordion-header" id="flush-heading${i+1}">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse${i+1}" aria-expanded="false" aria-controls="flush-collapse${i+1}">
-              ${response[i].content}
-              </button>
-            </h2>
-            <div id="flush-collapse${i+1}" class="accordion-collapse collapse" aria-labelledby="flush-heading${i+1}" data-bs-parent="#accordionFlushExample">
-              <div class="accordion-body">
-              <span style="padding-right: 20px;"><a data-bs-toggle="modal" data-bs-target="#calendarModal"><ion-icon name="calendar-outline"></ion-icon>${new Date (response[i].due.date).toDateString()}</a></span>
-              <span style="padding-right: 20px;"><a data-bs-toggle="modal" data-bs-target="#commentmodal"><ion-icon name="chatbox-outline"></ion-icon>Add Comments</a></span></span>
-              <span><a data-bs-toggle="modal" data-bs-target="#viewcomments"><ion-icon name="eye-outline"></ion-icon>View Comments</a></span></span>
-              <span><div class="form-check">
-              <br>
-              <input onclick="displayToast()" class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-              <label class="form-check-label" for="defaultCheck1">
-                Complete Task
-              </label>
-            </div></span>
-              </div>
-            </div>
-          </div>`
-          tasks+='<span class = "three-dots"></span></div>'    //add the 'options' dots at the side using js later
-          var projectList = document.getElementById("getalltasks");
-          projectList.innerHTML = tasks;
-          var startdate = new Date (response[i].due.date).toDateString();
-          startingDate = new Date(startdate);
-          var todaysDate = new Date() ;
-          var timeDiff=  startingDate.getTime() - todaysDate.getTime();
-          var dayDiff = timeDiff / (1000 * 3600 * 24);
-          dayDiff = Math.ceil(dayDiff);
-          $("#daydiff").html(dayDiff);
-          $("#duedate").html(startdate)        
-  
+        var results = normalizeTodoistListResponse(response);
+        taskList = results;
+        for(let i =0;i<results.length;i++){
+            var dueDateText = (results[i].due && results[i].due.date) ? new Date(results[i].due.date).toDateString() : 'No due date';
+            tasks+=`<div class="accordion-item"><h2 class="accordion-header" id="flush-heading${i+1}"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse${i+1}" aria-expanded="false" aria-controls="flush-collapse${i+1}">${results[i].content}</button></h2><div id="flush-collapse${i+1}" class="accordion-collapse collapse" aria-labelledby="flush-heading${i+1}" data-bs-parent="#accordionFlushExample"><div class="accordion-body"><span style="padding-right: 20px;"><a data-bs-toggle="modal" data-bs-target="#calendarModal"><ion-icon name="calendar-outline"></ion-icon>${dueDateText}</a></span><span style="padding-right: 20px;"><a data-bs-toggle="modal" data-bs-target="#commentmodal"><ion-icon name="chatbox-outline"></ion-icon>Add Comments</a></span></span><span><a data-bs-toggle="modal" data-bs-target="#viewcomments"><ion-icon name="eye-outline"></ion-icon>View Comments</a></span></span><span><div class="form-check"><br><input onclick="displayToast()" class="form-check-input" type="checkbox" value="" id="defaultCheck1"><label class="form-check-label" for="defaultCheck1">Complete Task</label></div></span></div></div></div>`;
+            tasks+='<span class = "three-dots"></span></div>';
+            document.getElementById("getalltasks").innerHTML = tasks;
         }
-
-    });
-   
+    }).fail(handleTodoistError);
     var d = $("[aria-expanded=true]").parent().next().children().children().first().children().text();
-
-    $('.accordion-body').children('span').first().on('focus',function(){
-        // reserved for future calendar focus behavior
-    });
+    $('.accordion-body').children('span').first().on('focus',function(){});
     $('#calendarModal h6.duedate').text(d);
 }
 function reopenTask(reOpenId){
-    var settings = {
-        "url":`https://api.todoist.com/rest/v1/tasks/${reOpenId}/reopen`,
-        "method":"POST",
-        "headers":{
-            "Authorization":`Bearer ${API_KEY}`
-        }
-    };
-    $.ajax(settings).done(function(response){
-        if(response == undefined){
-
-        }
-    });
+    var settings = withTodoistAuth({"url":`${TODOIST_API_BASE}/tasks/${String(reOpenId)}/reopen`,"method":"POST","headers":{}});
+    if(!settings){ return; }
+    $.ajax(settings).done(function(){}).fail(handleTodoistError);
 }
 //Side Anvigation and Banner
 const showMenu = (toggleId, navbarId, bodyId)=>{
@@ -691,20 +637,14 @@ prizeList = {
     
     }
 function closeTask(closingTaskId){
-    var settings = {
-        "url": `https://api.todoist.com/rest/v1/tasks/${closingTaskId}/close`,
+    var settings = withTodoistAuth({
+        "url": `${TODOIST_API_BASE}/tasks/${String(closingTaskId)}/close`,
         "method":"POST",
-        "statusCode":{
-            204:function(){
-                alert(`Task Id :${closingTaskId} has been successfully closed!`);
-            }
-        },
-        "headers":{
-            "Authorization":`Bearer ${API_KEY}`
-        }
-    }
-    $.ajax(settings).done(function(response){
-    });
+        "statusCode":{204:function(){ alert(`Task Id :${closingTaskId} has been successfully closed!`);}},
+        "headers":{}
+    })
+    if(!settings){ return; }
+    $.ajax(settings).done(function(){}).fail(handleTodoistError);
 }
 function displayToast(){
     var toast = document.getElementById("toastcompleted")
