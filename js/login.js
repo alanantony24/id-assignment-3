@@ -23,17 +23,17 @@ function userSignUp(newUsername,newPassword){
         "password":newPassword,
     }   
     var settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": "https://ordinouserrecords-4526.restdb.io/rest/ordino-user-records",
-        "method": "POST",
-        "headers": {
-          "content-type": "application/json",
-          "x-apikey": "YOUR_RESTDB_API_KEY",
-          "cache-control": "no-cache"
-        },
-        "data":JSON.stringify(userdata)
-      }
+      async: true,
+      crossDomain: true,
+      url: "https://ordinouserrecords-4526.restdb.io/rest/ordino-user-records",
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-apikey": "601fe54e3f9eb665a168922e",
+        "cache-control": "no-cache",
+      },
+      data: JSON.stringify(userdata),
+    };
       
       $.ajax(settings).done(function (response) {
               });
@@ -41,16 +41,16 @@ function userSignUp(newUsername,newPassword){
 
 function userLogin($loginUsername,$loginPassword){
     var settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": "https://ordinouserrecords-4526.restdb.io/rest/ordino-user-records",
-        "method": "GET",
-        "headers": {
-          "content-type": "application/json",
-          "x-apikey": "YOUR_RESTDB_API_KEY",
-          "cache-control": "no-cache"
-        }
-    }
+      async: true,
+      crossDomain: true,
+      url: "https://ordinouserrecords-4526.restdb.io/rest/ordino-user-records",
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+        "x-apikey": "601fe54e3f9eb665a168922e",
+        "cache-control": "no-cache",
+      },
+    };
     let loadContent = `
 
     <div class ="row justify-content-center align-self-center">

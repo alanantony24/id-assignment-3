@@ -401,16 +401,16 @@ function showStore(){
 }
 function getUserPoints(){
     var settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": "https://ordinouserrecords-4526.restdb.io/rest/ordino-user-records",
-        "method": "GET",
-        "headers": {
-          "content-type": "application/json",
-          "x-apikey": "YOUR_RESTDB_API_KEY",
-          "cache-control": "no-cache"
-        }
-    }
+      async: true,
+      crossDomain: true,
+      url: "https://ordinouserrecords-4526.restdb.io/rest/ordino-user-records",
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+        "x-apikey": "601fe54e3f9eb665a168922e",
+        "cache-control": "no-cache",
+      },
+    };
       
     $.ajax(settings).done(function (response) {
         for(let i =0;i<response.length;i++){
@@ -517,16 +517,16 @@ function deleteProj(pList, API_KEY){
 //main sort function gotten from w3schools
 function sortUserPoints(pointsList){
     var settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": "https://ordinouserrecords-4526.restdb.io/rest/ordino-user-records",
-        "method": "GET",
-        "headers": {
-          "content-type": "application/json",
-          "x-apikey": "YOUR_RESTDB_API_KEY",
-          "cache-control": "no-cache"
-        }
-      }
+      async: true,
+      crossDomain: true,
+      url: "https://ordinouserrecords-4526.restdb.io/rest/ordino-user-records",
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+        "x-apikey": "601fe54e3f9eb665a168922e",
+        "cache-control": "no-cache",
+      },
+    };
       
       $.ajax(settings).done(function (response) {
         for(let i =0;i<response.length;i++){
@@ -539,16 +539,16 @@ function sortUserPoints(pointsList){
 }
 function getAllGameRecords(){ //for the leaderboard ranking
     var settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": "https://ordinouserrecords-4526.restdb.io/rest/ordino-user-records",
-        "method": "GET",
-        "headers": {
-          "content-type": "application/json",
-          "x-apikey": "YOUR_RESTDB_API_KEY",
-          "cache-control": "no-cache"
-        }
-      }
+      async: true,
+      crossDomain: true,
+      url: "https://ordinouserrecords-4526.restdb.io/rest/ordino-user-records",
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+        "x-apikey": "601fe54e3f9eb665a168922e",
+        "cache-control": "no-cache",
+      },
+    };
       
       $.ajax(settings).done(function (response) {
                 var tableContent = "";
@@ -602,17 +602,17 @@ function updatePoints(API_KEY){
         "Tier":userTier
     };
     var settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": `https://ordinouserrecords-4526.restdb.io/rest/ordino-user-records/${idReference[API_KEY]}`,
-        "method": "PUT",
-        "headers": {
-          "content-type": "application/json",
-          "x-apikey": "YOUR_RESTDB_API_KEY",
-          "cache-control": "no-cache"
-        },
-        "processData": false,
-        "data": JSON.stringify(jsondata)
+      async: true,
+      crossDomain: true,
+      url: `https://ordinouserrecords-4526.restdb.io/rest/ordino-user-records/${idReference[API_KEY]}`,
+      method: "PUT",
+      headers: {
+        "content-type": "application/json",
+        "x-apikey": "601fe54e3f9eb665a168922e",
+        "cache-control": "no-cache",
+      },
+      processData: false,
+      data: JSON.stringify(jsondata),
     };
       
     $.ajax(settings).done(function(response) {
