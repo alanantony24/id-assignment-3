@@ -5,8 +5,7 @@ $(document).ready(function(){
     getUserPoints();            //initialise user points from restdb
     userPoints = localStorage.getItem("APPoints");
     displayName() //load first when ready
-    console.log("API-KEY is:" + API_KEY);
-    /*===================================SIDE NAVBAR EVENT LISTENERS====================================================*/
+        /*===================================SIDE NAVBAR EVENT LISTENERS====================================================*/
     var $inboxTab = $('nav.nav1').children().children().eq(1).children().first();
     var clickCount = 0;  //click variable to make sure content doesn't append
     $inboxTab.on("focus",function(){
@@ -32,12 +31,12 @@ $(document).ready(function(){
         }
     });
     /*==========================================INBOX TAB EVENT LISTENERS============================================*/
-    var $deleteIcon = document.querySelectorAll('div.accordion-body button#delete');
-    $deleteIcon.addEventListener('focus',function(){
-        alert("hello");
-        // deleteProject(,API_KEY);
-        // getAllProjects(colorArray);//call function again to reset the project List in DOM 
-    },false);
+    var $deleteIcons = document.querySelectorAll('div.accordion-body button#delete');
+    $deleteIcons.forEach(function(btn){
+        btn.addEventListener('focus', function(){
+            // placeholder for delete interaction
+        }, false);
+    });
     var $editIcon = $('div.accordion-body button#update');
     $editIcon.on("click",function(e){
         e.preventDefault();
@@ -45,14 +44,12 @@ $(document).ready(function(){
     });
     $('a:contains("View Comments")').on('click',function(){         //when user clicks on view comments
         var selectedTaskName = $('[aria-expanded=true]').text().trim()
-        console.log(selectedTaskName);
-        $('h5.taskNameinModal').text(selectedTaskName);
+                $('h5.taskNameinModal').text(selectedTaskName);
     
     });
     $('a:contains("Add Comments")').on('click',function(){          //when user clicks on add comments
         var selectedTaskName = $('[aria-expanded=true]').text().trim()
-        console.log(selectedTaskName);
-        $('h5#tasknameaddcomments').text(selectedTaskName);
+                $('h5#tasknameaddcomments').text(selectedTaskName);
     });//api doesn't work
 });
 /*===================================SIDE NAVBAR & AJAX FUNCTIONS====================================================*/
@@ -93,8 +90,7 @@ function getAllProjects(colorArray){
         }
     };
     $.ajax(settings).done(function(response){
-        console.log(response);
-        var color = "";
+                var color = "";
         for(let i =0;i<response.length;i++){
             // if(response[i].hasOwnProperty("color")){
             //     color = response[i].color;
@@ -147,8 +143,7 @@ function createNewProject(pName,API_KEY){ //POST method
         "data":JSON.stringify(projectInfo)
     };
     $.ajax(settings).done(function(response){
-        console.log(response);
-        hideModal();
+                hideModal();
         function hideModal(){
             $("#addProj").modal('toggle');
         }
@@ -169,8 +164,7 @@ function deleteProject(deleteId,API_KEY){
         }
     }
     $.ajax(settings).done(function(response){
-        console.log(response);
-        if(response  === undefined){
+                if(response  === undefined){
             userDelProjects += 1;
             updatePoints(API_KEY);  //update RestDB
             alert(`Project ID:${deleteId} has been deleted successfully.`);
@@ -186,9 +180,7 @@ $('button#addtask').on("click",function(e){
 var dueDate = ''
 $('input#task_datetime').on('blur',function(){
     dueDate = $('input#task_datetime').val()
-    console.log(dueDate);
-    console.log(new Date(dueDate).toISOString());
-});
+        });
 function createNewTask(taskName,API_KEY, dueDate){
     if(dueDate === '' || dueDate === undefined){
         alert("Empty")
@@ -271,8 +263,8 @@ function getActiveTasks(API_KEY){
    
     var d = $("[aria-expanded=true]").parent().next().children().children().first().children().text();
 
-    $('accordion-body').children('span').first().on('focus',function(){
-        alert('a');
+    $('.accordion-body').children('span').first().on('focus',function(){
+        // reserved for future calendar focus behavior
     });
     $('#calendarModal h6.duedate').text(d);
 }
@@ -415,7 +407,7 @@ function getUserPoints(){
         "method": "GET",
         "headers": {
           "content-type": "application/json",
-          "x-apikey": "601fe54e3f9eb665a168922e",
+          "x-apikey": "YOUR_RESTDB_API_KEY",
           "cache-control": "no-cache"
         }
     }
@@ -514,15 +506,11 @@ addprojbtn.addEventListener('click', function(){
 //we have tested all the vairable but for some reason it does not work. We honestly dont know why.
 function deleteProj(pList, API_KEY){
     var pname = $("[class= accordion-button]").text().trim();
-    console.log(pList)
-    for(var i = 0; i < pList.length; i++){
-        console.log(pname)
-        console.log(typeof API_KEY)
-        if(pList[i].name  == pname){
+        for(var i = 0; i < pList.length; i++){
+                        if(pList[i].name  == pname){
             alert("Successfull deletion");
             deleteProject(pList[i].id, API_KEY);
-            console.log(pList[i].id);
-            break;
+                        break;
         }
     }
 }
@@ -535,7 +523,7 @@ function sortUserPoints(pointsList){
         "method": "GET",
         "headers": {
           "content-type": "application/json",
-          "x-apikey": "601fe54e3f9eb665a168922e",
+          "x-apikey": "YOUR_RESTDB_API_KEY",
           "cache-control": "no-cache"
         }
       }
@@ -545,8 +533,7 @@ function sortUserPoints(pointsList){
             let points = response[i].APPoints
             pointsList.push(points);
         }
-        console.log(pointsList);
-      });
+              });
 
     pointsList = pointsList.sort(function(a, b){return b-a}); //w3schools
 }
@@ -558,14 +545,13 @@ function getAllGameRecords(){ //for the leaderboard ranking
         "method": "GET",
         "headers": {
           "content-type": "application/json",
-          "x-apikey": "601fe54e3f9eb665a168922e",
+          "x-apikey": "YOUR_RESTDB_API_KEY",
           "cache-control": "no-cache"
         }
       }
       
       $.ajax(settings).done(function (response) {
-        console.log(response);
-        var tableContent = "";
+                var tableContent = "";
         for(let x =0 ;x<pointsList.length;x++){
             for(let i =0;i<response.length;i++){
                 let user = response[i];
@@ -603,10 +589,7 @@ function updatePoints(API_KEY){
         userTier = 0;
     }
     var idReference = {
-        "69240a14af7f11d150b64bc00c5558cba3741041":"6022a234e4ccd46b0001c90f",
-        "9ffb6de49236f049524d53010b0fe7e1b55a9175":"60263ad8b0bc995a0001b52f",
-        "091ba9ad13fb753c014adf401afbc0b3ce476db2":"60263bf6b0bc995a0001b549",
-        "74829a769468751c27ce5dbf7c162c31c6972322":"6020a5d3e4ccd46b000050ee"
+        "YOUR_TODOIST_API_TOKEN":"YOUR_RESTDB_RECORD_ID"
     };    
     var jsondata = {
         "created_projects":userCreatedProjects,
@@ -625,7 +608,7 @@ function updatePoints(API_KEY){
         "method": "PUT",
         "headers": {
           "content-type": "application/json",
-          "x-apikey": "601fe54e3f9eb665a168922e",
+          "x-apikey": "YOUR_RESTDB_API_KEY",
           "cache-control": "no-cache"
         },
         "processData": false,
@@ -633,8 +616,7 @@ function updatePoints(API_KEY){
     };
       
     $.ajax(settings).done(function(response) {
-        console.log(response);
-    });
+            });
 }
 //js to cycle through the different month rewards
 

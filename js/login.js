@@ -29,15 +29,14 @@ function userSignUp(newUsername,newPassword){
         "method": "POST",
         "headers": {
           "content-type": "application/json",
-          "x-apikey": "601fe54e3f9eb665a168922e",
+          "x-apikey": "YOUR_RESTDB_API_KEY",
           "cache-control": "no-cache"
         },
         "data":JSON.stringify(userdata)
       }
       
       $.ajax(settings).done(function (response) {
-        console.log(response);
-      });
+              });
 }
 
 function userLogin($loginUsername,$loginPassword){
@@ -48,7 +47,7 @@ function userLogin($loginUsername,$loginPassword){
         "method": "GET",
         "headers": {
           "content-type": "application/json",
-          "x-apikey": "601fe54e3f9eb665a168922e",
+          "x-apikey": "YOUR_RESTDB_API_KEY",
           "cache-control": "no-cache"
         }
     }
@@ -66,8 +65,6 @@ function userLogin($loginUsername,$loginPassword){
 </div>`; //loading animation content
  
     $.ajax(settings).done(function(response){
-        console.log(response);
-        console.log(response.length);
         let userFound = 0;
         for(var i = 0;i<response.length;i++){
             let user = response[i];
