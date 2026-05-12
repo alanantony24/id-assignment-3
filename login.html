@@ -39,6 +39,10 @@
                       <label for="password">Password:</label>
                       <input type="password" name="password" class = "form-control" id="password"  required>  
                     </div>
+                    <div class="form-group">
+                      <label for="todoistToken">Todoist API Token (required for tasks):</label>
+                      <input type="password" name="todoistToken" class="form-control" id="todoistToken" placeholder="Paste your Todoist personal API token">
+                    </div>
                     <div class="d-grid gap-2 mx-auto">
                       <input type="submit" id ="login-button" class = "btn btn-outline-success " value="Login">
                     </div>
@@ -53,6 +57,10 @@
                     <div class="form-group">
                       <label for="password">Password:</label>
                       <input type="password" name="password" class = "form-control" id="newPassword" required>  
+                    </div>
+                    <div class="form-group">
+                      <label for="newTodoistToken">Todoist API Token:</label>
+                      <input type="password" name="newTodoistToken" class="form-control" id="newTodoistToken" placeholder="Paste your Todoist personal API token" required>
                     </div>
                     <div class="d-grid gap-2 mx-auto">
                       <input type="submit" class = "btn btn-outline-primary " id ="create-user-button" value="Sign Up">
